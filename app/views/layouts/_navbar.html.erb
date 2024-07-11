@@ -1,0 +1,78 @@
+<div class="nav-container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            
+            <%= link_to 'ALPHA BLOG',root_path ,class:"navbar-brand",id:"logo"%>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    
+                    <%# <%= link_to 'Bloggers',users_path,class:"nav-link" %>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Articles
+                    </a>
+                    <ul class="dropdown-menu">
+                        <%if user_signed_in? %>
+                            <%= link_to 'Create A New Article',new_article_path,class:"dropdown-item"%>
+                        <%end%>
+                        <%= link_to 'Articles', articles_path,class:"dropdown-item"%>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Categories
+                    </a>
+                    <ul class="dropdown-menu">
+                        <%# <%if user_signed_in? && current_user.admin? %>
+                            <%# <%= link_to 'Create A New Category',new_category_path,class:"dropdown-item"%>
+                        <%# <%end%> 
+                        <%# <%= link_to 'categories', categories_path,class:"dropdown-item"%>
+                    </ul>
+                </li>
+                <% if user_signed_in? %>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <%# <%="(Admin) " if current_user.admin? %>
+                        </a>
+                        <ul class="dropdown-menu">
+                           
+                            <%# <%= link_to 'View Your Profile',user_path(current_user),class:"dropdown-item"%> 
+                            <%= link_to 'Edit Your Profile',  edit_user_registration_path(current_user),class:"dropdown-item"%>
+                            
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <%= link_to  destroy_user_session_path, class:"nav-link" ,data: { 
+                                turbo_method: :delete,
+                                turbo_confirm: "Are you sure?"
+                            } do %>
+                            Logout
+                        <% end %>
+                    </li>
+                <% else %>
+                    <li class="nav-item">
+                        <%= link_to 'Login',new_user_session_path,class:"nav-link" %>
+                    </li>
+                    <li class="nav-item">
+                        <%= link_to 'SignUp', new_user_registration_path,class:"nav-link" %>
+                    </li>
+                <%end%>
+            </ul>
+            
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            </div>
+        </div>
+    </nav>
+    
+</div>
