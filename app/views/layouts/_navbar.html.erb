@@ -20,6 +20,9 @@
                         <%if user_signed_in? %>
                             <%= link_to 'Create A New Article',new_article_path,class:"dropdown-item"%>
                         <%end%>
+                         <%if user_signed_in? && current_user.is_admin?%>
+                             <%= link_to  'Approve Articles',article_verification_articles_path,class:"dropdown-item"%> 
+                        <%end %>
                         <%= link_to 'Articles', articles_path,class:"dropdown-item"%>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -27,24 +30,35 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Tags
+                    </a>
+                    <ul class="dropdown-menu">
+                        <%if user_signed_in? && current_user.is_admin?%>
+                             <%= link_to  'Create A New Tag',new_tag_path,class:"dropdown-item"%> 
+                        <%end %>
+                        <%= link_to 'tags', tags_path,class:"dropdown-item"%>
+                    </ul>
+                </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Categories
                     </a>
                     <ul class="dropdown-menu">
-                        <%# <%if user_signed_in? && current_user.admin? %>
-                            <%# <%= link_to 'Create A New Category',new_category_path,class:"dropdown-item"%>
-                        <%# <%end%> 
-                        <%# <%= link_to 'categories', categories_path,class:"dropdown-item"%>
+                        <%if user_signed_in? && current_user.is_admin?%>
+                             <%= link_to  'Create A New Category',new_category_path,class:"dropdown-item"%> 
+                        <%end %>
+                        <%= link_to 'categories', categories_path,class:"dropdown-item"%>
                     </ul>
                 </li>
                 <% if user_signed_in? %>
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <%# <%="(Admin) " if current_user.admin? %>
+                         <%="(Admin) " if current_user.is_admin? %>
                         </a>
                         <ul class="dropdown-menu">
                            
-                            <%# <%= link_to 'View Your Profile',user_path(current_user),class:"dropdown-item"%> 
+                            <%= link_to 'View Your Profile',user_path(current_user),class:"dropdown-item"%> 
                             <%= link_to 'Edit Your Profile',  edit_user_registration_path(current_user),class:"dropdown-item"%>
                             
                         </ul>

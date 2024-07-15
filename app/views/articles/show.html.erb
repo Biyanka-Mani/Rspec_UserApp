@@ -7,14 +7,21 @@
                     <div class="card-header fst-italic">
                       Created By <%= @article.user.first_name if @article.user%>
                      
-                      <%# <%if @article.categories.any? %>
-                        <%# <div class="mt-2">
+                      <%if @article.categories.any? %>
+                        <div class="mt-2">
                             <%=render @article.categories%>
-                        <%# </div> %> 
-                        <%# <%end%> 
+                         </div> 
+                    <% end %> 
                     </div>
                     <div class="card-body">
                       <h5 class="card-title"><%= link_to @article.name,class:"text-success" %></h5>
+                            <% if @article.main_image.attached? %>
+                               <%= image_tag @article.main_image, class: "img-thumbnail img-fluid" %>
+                            <% else %>
+                        <p>No image available</p>
+                        <% end %>
+
+
                       <div class="card-text text-left"><%=simple_format(@article.description) %></div>
                       <%if user_signed_in? %>
                           <%= link_to 'Edit' ,edit_article_path(@article),class:"btn btn-outline-success"%> 
@@ -23,6 +30,13 @@
                               turbo_confirm: "Are you sure?"
                           } %>
                       <%end%>
+                        <% if current_user && @article.user != current_user %>
+                            <% if @article.likes.exists?(user: current_user) %>
+                                <%= button_to 'Unlike', article_like_path(@article), method: :delete %>
+                            <% else %>
+                                <%= button_to 'Like', article_like_path(@article), method: :post %>
+                            <% end %>
+                        <% end %>
                     </div>
                     <div class="card-footer text-muted">
                       <small>Created <%=time_ago_in_words(@article.created_at)%> ago,Edited <%=time_ago_in_words(@article.updated_at)%> ago</small>

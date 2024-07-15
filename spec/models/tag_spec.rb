@@ -2,17 +2,32 @@ require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
   # pending "add some examples to (or delete) #{__FILE__}"
-
-  let(:tag){ FactoryBot.create(:tag)  }
-
-  it 'has a name' do 
-    expect(tag.name_of_tag).to eq('Techies')
-    tag.name_of_tag='2024 Christmas'
-    expect(tag.name_of_tag).to eq('2024 Christmas')
+  before do
+    @tag = FactoryBot.create(:tag)
   end
-  it "is invalid without a name" do
-    tag = Tag.new(name_of_tag: nil)
-    expect(tag).not_to be_valid
+  it "is valid with valid attributes" do
+    expect(@tag).to be_valid
+  end
+
+  it "is not valid without a name" do
+    @tag.name_of_tag = nil
+    expect(@tag).to_not be_valid
+  end
+
+  it "is not valid with a name that is too short" do
+    @tag.name_of_tag= "A"
+    expect(@tag).to_not be_valid
+  end
+
+  it "is not valid with a name that is too long" do
+    @tag.name_of_tag = "A" * 160
+    expect(@tag).to_not be_valid
+  end
+
+  it "is not valid with a duplicate name" do
+    @tag = create(:tag, name_of_tag: "Sample")
+    duplicate_tag = Tag.new(name_of_tag: "Sample")
+    expect(duplicate_tag).to_not be_valid
   end
 
   describe 'associations' do 

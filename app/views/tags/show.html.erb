@@ -1,0 +1,11 @@
+<h1 class="text-center mt-3"> Tag name: <%=@tag.name_of_tag%> 's Profile</h1>
+<div class="text-center mt-2">
+    <%if user_signed_in?  && current_user.is_admin? %>
+        <%=link_to 'Edit tag',edit_tag_path(@tag),class:"btn btn-outline-info mt-3"%>
+     <%end  %>
+</div>
+
+
+<h2 class="text-center mt-3">Articles</h2>
+
+<%= render 'articles/article' %>

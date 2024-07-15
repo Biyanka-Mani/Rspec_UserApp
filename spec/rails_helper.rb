@@ -57,7 +57,7 @@ RSpec.configure do |config|
   #
   # The different available types are documented in the features, such as in
   # https://rspec.info/features/6-0/rspec-rails
- 
+  Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.

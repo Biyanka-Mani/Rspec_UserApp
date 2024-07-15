@@ -1,4 +1,30 @@
 <h1 class="text-center mt-5">Articles List</h1>
 
 
+<%= form_with url: filter_articles_path, method: :get, local: true do %>
+  <div>
+    <%= label_tag :start_date, "Start Date" %>
+    <%= date_field_tag :start_date %>
+  </div>
+  <div>
+    <%= label_tag :end_date, "End Date" %>
+    <%= date_field_tag :end_date %>
+  </div>
+  <div>
+    <%= label_tag :category_id, "Category" %>
+    <%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :name_of_category), include_blank: true %>
+  </div>
+  <div>
+    <%= label_tag :tag_id, "Tag" %>
+    <%= select_tag :tag_id, options_from_collection_for_select(Tag.all, :id, :name_of_tag), include_blank: true %>
+  </div>
+  <div>
+    <%= submit_tag "Filter" %>
+  </div>
+<% end %>
 <%= render 'article'%>
+ 
+ 
+
+
+

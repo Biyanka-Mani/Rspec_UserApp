@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="row justify-content-center text-center mb-4 mb-md-5">
+			<div class="col-xl-9 col-xxl-8">
+				<span class="text-muted">Read More</span>
+				<h2 class="display-5 fw-bold">Users Mangement</h2>
+				<p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
+			</div>
+		</div>
+<div class="col-md-12">
+        
+    <% @users.each do |user| %>
+            <div class="card b-1 hover-shadow mb-5">
+                <div class="media card-body">
+                    <div class="media-left pr-12">
+                       
+                    </div>
+                    <div class="media-body">
+                        <div class="mb-2">
+                            <i class="fa fa-solid fa-user"></i>
+                            <span class="fs-20 pr-16"><%= link_to user.first_name ,user_path(user) %></span>
+                        </div>
+                        <small class="fs-16 fw-300 ls-1">
+                            <% if user.articles.count !=0 %>
+                             Author
+                            <%else%>
+                            Regular User
+                            <%end%>
+                        </small>
+                    </div>
+                    <div class="media-right text-right d-none d-md-block">
+                        <p class="fs-14 text-fade mb-12"><i class="fa fa-regular fa-envelope pr-1"></i> <%= user.email%></p>
+                        <span class="text-fade"><i class="fa fa-regular fa-newspaper pr-1"></i> <%=pluralize(user.articles.count,"articles")%></span>
+                    </div>
+                </div>
+                <footer class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Joined on:</strong>
+                        <span><%= user.created_at %></span>
+                    </div>
+                    <div class="ml-auto">
+                        <% if user.articles.count !=0 %>
+                            <%= link_to  "View Articles", user_path(user),class:"btn btn-xs fs-10 btn-bold btn-info" %>
+                        <%end%>
+                         
+                      <% if !user.is_admin  %>
+                        <%=link_to "Delete", user_path(user), class:"btn btn-outline-danger",data: { 
+                              turbo_method: :delete,
+                              turbo_confirm: "Are you sure?"
+                          } %>
+                    <%end%>
+
+                    </div>
+                </footer>
+            </div>
+    <% end %>
+    <div class="flickr_pagination mb-3">
+        <%= will_paginate @users, :container => false %>
+    </div>
+</div>
+</div>

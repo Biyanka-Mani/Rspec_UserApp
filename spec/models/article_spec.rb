@@ -27,11 +27,11 @@ RSpec.describe Article, type: :model do
     expect(article).not_to be_valid
   end
 
-  it 'should have a length of minimum 2 characters and maximum of 15 characters with name'do 
+  it 'should have a length of minimum 2 characters and maximum of 50 characters with name'do 
     article.name='w'*1
     expect(article).not_to be_valid
 
-    article.name='w'*16
+    article.name='w'*160
     expect(article).not_to be_valid
   end
   

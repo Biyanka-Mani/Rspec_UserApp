@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
   before_action :find_tag,only: [:show,:edit,:update,:destroy]
+  before_action :require_admin, except:[:show,:index]
   def index
     @tags=Tag.all
   end
@@ -50,6 +51,12 @@ end
     end
     def find_tag
         @tag=Tag.find(params[:id])
+    end
+    def require_admin
+      unless current_user.is_admin?
+        flash[:alert] = "Only admins can perform that action"
+        redirect_to tags_path
+      end 
     end
 end
 

@@ -17,6 +17,28 @@
                             <%=f.text_area :description,class:"form-control shadow  rounded",rows:9 ,placeholder:"Description of The Article"%>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <%=f.label :category,class:"col-2 col-form-label text-white" %>
+                        <div class="col-10 mt-4">
+                            <%= f.collection_select(:category_ids,Category.order(:name_of_category), :id, :name_of_category,
+                                {prompt: "Make Your Select from Below Options(can be empty)"}, 
+                                { multiple:true ,size:3,class:"form-select shadow rounded"}) %>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <%=f.label :tag,class:"col-2 col-form-label text-white" %>
+                        <div class="col-10 mt-4">
+                            <%= f.collection_select(:tag_ids,Tag.order(:name_of_tag), :id, :name_of_tag,
+                                {prompt: "Make Your Select from Below Options(can be empty)"}, 
+                                { multiple:true ,size:3,class:"form-select shadow rounded"}) %>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <%= f.label :main_image, class:"form-label" %>
+                        <%= f.file_field :main_image, class: "form-control", type:"file", id:"formFile"%>
+                    </div>
+ 
                    
                     <div class="form-group  text-center mt-5">
                         <%= f.submit class:"btn btn-outline-dark btn-lg my-6 text-white " %>

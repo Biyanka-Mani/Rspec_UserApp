@@ -2,33 +2,35 @@ require 'rails_helper'
 
 RSpec.describe "Categories", type: :request do
   #let(:valid_attributes) { FactoryBot.create(:category) }
-  let(:valid_attributes) { attributes_for(:category) }
-  let(:invalid_attributes) { { name_of_category: '' } }
-  let!(:articles) { create_list(:article, 3, categories: [category]) }
-  let!(:category) { create(:category) }
+  let(:valid_attributes) { attributes_for(:tag) }
+  let(:invalid_attributes) { { name_of_tag: '' } }
+  let!(:articles) { create_list(:article, 3, tags: [tag]) }
+  let!(:tag) { create(:tag) }
 
   let(:non_admin) { FactoryBot.create(:user) }
   let(:admin) { FactoryBot.create(:user, :admin) }
- 
+
   describe "GET /index" do
-    before{ get categories_path}
+    before{get tags_path}
     it "returns http success" do
       expect(response).to have_http_status(:success)
     end
-    it "assigns @categories" do
-      expect(assigns(:categories)).to eq([category])
+    it "assigns @tags" do
+      expect(assigns(:tags)).to eq([tag])
     end
-    it_behaves_like "render_template",:index
+    it "renders the :index view" do
+      expect(response).to render_template(:index)
+    end
   end
   describe "GET #new" do
     context "when user is admin" do
       before{ 
       sign_in admin 
       admin.confirm 
-      get new_category_path }
+      get new_tag_path }
       
-      it "assigns @category" do
-        expect(assigns(:category)).to be_instance_of(Category)
+      it "assigns @tag" do
+        expect(assigns(:tag)).to be_instance_of(Tag)
       end
       it "renders the :new view" do
         expect(response).to render_template(:new)
@@ -47,46 +49,36 @@ RSpec.describe "Categories", type: :request do
     end
   end
   
-  describe "GET #show" do
-    before{ get category_path(category)}
-    it "test category that the same as category passed " do      
-      expect(assigns(:category)).to eq(category)  
-    end
-    it "get the all articles " do      
-      expect(assigns(:articles)).to eq(category.articles)  
-    end
-    it "renders the :show view" do
-      expect(response).to render_template(:show)
-    end
-  end
+  
+  
   describe "POST #create" do
     context 'when admin user is signed in' do
       before{ 
         sign_in admin 
         admin.confirm }
       context "success" do
-        it "adds new category to a list of category " do
+        it "adds new tag to a list of tag " do
           expect {
-            post categories_path,params: { category: valid_attributes  }
-          }.to change(Category, :count).by(1)
+            post tags_path,params: { tag: valid_attributes  }
+          }.to change(Tag, :count).by(1)
         end
 
-        it "redirects to 'category_path,' after successful create" do
-          post categories_path,  params: { category: valid_attributes }
+        it "redirects to 'tag_path,' after successful create" do
+          post tags_path,params: { tag: valid_attributes  }
           expect(response.status).to be(302)
-          expect(response.location).to match(/\/categories\/\d+/)
+          expect(response.location).to match(/\/tags\/\d+/)
         end
       end
 
       context "failure" do
-        it "new article is not added to current_user" do
+        it "new tag is not added to current_user" do
           expect {
-            post categories_path, params: { category: invalid_attributes }
-          }.to change(Category, :count).by(0)
+            post tags_path, params: { tag: invalid_attributes }
+          }.to change(Tag, :count).by(0)
         end
         
-        it "redirects to 'new_category_path' after unsuccessful create" do
-          post categories_path, params: { category: invalid_attributes }
+        it "redirects to 'new_tag_path' after unsuccessful create" do
+          post  tags_path, params:  { tag: invalid_attributes }
           expect(response).to render_template(:new)
         end
         
@@ -96,40 +88,63 @@ RSpec.describe "Categories", type: :request do
       before{ 
         sign_in non_admin 
         non_admin.confirm 
-        post categories_path,params: { category: valid_attributes  }}
-        it 'redirects to categories_path with an alert' do
-          expect(response).to redirect_to(categories_path)
+        post tags_path,params: { tag: valid_attributes  }}
+        it 'redirects to tags_path with an alert' do
+          expect(response).to redirect_to(tags_path)
           expect(flash[:alert]).to match(/Only admins can perform that action/)
         end
     end
   end
 
+  describe "GET #show" do
+    before{get tag_path(tag)}
+    it "test tag that the same as tag passed " do      
+      expect(assigns(:tag)).to eq(tag)  
+    end
+    it "get the all articles " do      
+      expect(assigns(:articles)).to eq(tag.articles)  
+    end
+    it "renders the :show view" do
+      expect(response).to render_template(:show)
+    end
+  end
 
-
-  describe "GET #edit" do
+  describe "DELETE #destroy" do
     context 'when admin user is signed in' do
       before{ 
         sign_in admin 
-        admin.confirm 
-        get edit_category_path(category)}
-      it "get the @article" do
-        expect(assigns(:category)).to eq(category)
+        admin.confirm }
+      it 'removes existing tag from table' do
+        expect {  delete tag_path(tag) }.to change { Tag.count }.by(-1)
       end
-      it "renders the :edit view" do
-        expect(response).to render_template(:edit)
+      it 'renders index template' do
+        delete tag_path(tag)
+        expect(flash[:notice]).to match(/Tag is Deleted succesfully*/)
+        expect(response).to redirect_to(tags_path)
       end
     end
     context "when ordinary user is signed in" do 
       before{ 
         sign_in non_admin 
         non_admin.confirm 
-        post categories_path,params: { category: valid_attributes  }}
+        delete tag_path(tag)}
         it 'redirects to categories_path with an alert' do
-          expect(response).to redirect_to(categories_path)
+          expect(response).to redirect_to(tags_path)
           expect(flash[:alert]).to match(/Only admins can perform that action/)
         end
     end
   end
+
+  # describe "GET #edit" do
+  #   it "get the @article" do
+  #     get edit_category_path(category)
+  #     expect(assigns(:category)).to eq(category)
+  #   end
+  #   it "renders the :edit view" do
+  #     get edit_category_path(category)
+  #     expect(response).to render_template(:edit)
+  #   end
+  # end
 
   # describe "PATCH or PUT #update" do
   #   context 'with valid parameters' do
@@ -156,34 +171,7 @@ RSpec.describe "Categories", type: :request do
   #   end
   # end
  
-  describe "DELETE #destroy" do
-    context 'when admin user is signed in' do
-      before{ 
-        sign_in admin 
-        admin.confirm }
-      it 'removes existing category from table' do
-        expect {  delete category_path(category) }.to change { Category.count }.by(-1)
-      end
-      it 'renders index template' do
-        delete category_path(category)
-        expect(flash[:notice]).to match(/Article is Deleted succesfully*/)
-        expect(response).to redirect_to(categories_path)
-      end
-    end
-    context "when ordinary user is signed in" do 
-      before{ 
-        sign_in non_admin 
-        non_admin.confirm 
-        delete category_path(category)}
-        it 'redirects to categories_path with an alert' do
-          expect(response).to redirect_to(categories_path)
-          expect(flash[:alert]).to match(/Only admins can perform that action/)
-        end
-    end
-
-  end
-
-
-  
+ 
 
 end
+

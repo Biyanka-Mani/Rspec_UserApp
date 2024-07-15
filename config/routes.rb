@@ -4,10 +4,23 @@ Rails.application.routes.draw do
   get 'categories/create'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
+  resources :articles do
+    resource :like, only: [:create, :destroy]
+    collection do
+      get 'filter'
+      get 'article_verification'
+      # post '/articles/approve/:id', to: 'articles#approve', as: 'approve_article'
+    end 
+    member do
+      post 'approve', to: 'articles#approve', as: 'approve'
+    end
+   
+  end
   resources :articles 
+  resources :users
   resources :categories
   resources :tags
+ 
   root 'home#welcome'
 
   #  root to: "home#index"

@@ -4,7 +4,7 @@ RSpec.describe Category, type: :model do
   # pending "add some examples to (or delete) #{__FILE__}"
 
   before do
-    @category = Category.new(name_of_category: "Sample")
+    @category = FactoryBot.create(:category)
   end
 
   it "is valid with valid attributes" do
@@ -27,7 +27,7 @@ RSpec.describe Category, type: :model do
   end
 
   it "is not valid with a duplicate name" do
-    @category.save
+    @category = create(:category, name_of_category: "Sample")
     duplicate_category = Category.new(name_of_category: "Sample")
     expect(duplicate_category).to_not be_valid
   end
