@@ -7,11 +7,13 @@ RSpec.describe "Articles", type: :request do
   let(:invalid_attributes) { { name: " ", description: "" } }
   let(:category) { create(:category) }
 
-  before do
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(signed_in_user)
-    signed_in_user.confirm
-    sign_in signed_in_user
-  end
+ 
+
+  describe "GET #new" do
+    context "when user is an author" do
+      let(:user) { author }
+      it_behaves_like "signed in user GET #new"
+    end
 
   describe "GET #index" do
     it "assigns @articles" do
