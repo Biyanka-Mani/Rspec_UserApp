@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Categories", type: :request do
+RSpec.describe "Tags", type: :request do
   #let(:valid_attributes) { FactoryBot.create(:category) }
   let(:valid_attributes) { attributes_for(:tag) }
   let(:invalid_attributes) { { name_of_tag: '' } }
@@ -135,41 +135,51 @@ RSpec.describe "Categories", type: :request do
     end
   end
 
-  # describe "GET #edit" do
-  #   it "get the @article" do
-  #     get edit_category_path(category)
-  #     expect(assigns(:category)).to eq(category)
-  #   end
-  #   it "renders the :edit view" do
-  #     get edit_category_path(category)
-  #     expect(response).to render_template(:edit)
-  #   end
-  # end
+  describe "GET #edit" do
+    context 'when admin user is signed in' do
+      before{ 
+        sign_in admin 
+        admin.confirm }
+      it "get the @article" do
+        get edit_tag_path(tag)
+        expect(assigns(:tag)).to eq(tag)
+      end
+      it "renders the :edit view" do
+        get edit_tag_path(tag)
+        expect(response).to render_template(:edit)
+      end
+    end
+  end
 
-  # describe "PATCH or PUT #update" do
-  #   context 'with valid parameters' do
-  #     let(:new_attributes) { { name_of_category: 'Updated Name' } }
-  #     it "updated the @article" do
-  #       patch category_path(category), params: { category: new_attributes }
-  #       category.reload 
-  #       expect(category.name_of_category).to eq('Updated Name')
-  #     end
-  #     it "renders flash message and redirects to 'article_path' after successful updation" do
-  #       patch category_path(category),  params: { category: new_attributes }
-  #       category.reload 
-  #       expect(flash[:notice]).to be_present
-  #       expect(response.status).to be(302)
-  #       expect(response.location).to match(/\/categories\/\d+/)
-  #     end
+  describe "PATCH or PUT #update" do
+    context 'when admin user is signed in' do
+      before{ 
+        sign_in admin 
+        admin.confirm }
+      context 'with valid parameters' do
+        let(:new_attributes) { { name_of_tag: 'Updated Name' } }
+        it "updated the @article" do
+          patch tag_path(tag), params: { tag: new_attributes }
+          tag.reload 
+          expect(tag.name_of_tag).to eq('Updated Name')
+        end
+        it "renders flash message and redirects to 'article_path' after successful updation" do
+          patch tag_path(tag),  params: { tag: new_attributes }
+          tag.reload 
+          expect(flash[:notice]).to be_present
+          expect(response.status).to be(302)
+          expect(response.location).to match(/\/tags\/\d+/)
+        end
 
-  #     it "renders alert message and renders edit after unsucceesful article upadation" do
-  #       patch category_path(category),  params: { category: invalid_attributes }
-  #       category.reload 
-  #       expect(flash[:alert]).to match(/Category Updation Error Occured!*/)
-  #       expect(response).to render_template(:edit)
-  #     end
-  #   end
-  # end
+        it "renders alert message and renders edit after unsucceesful article upadation" do
+          patch tag_path(tag),  params: { tag: invalid_attributes }
+          tag.reload 
+          expect(flash[:alert]).to match(/Tag Updation Error Occured!*/)
+          expect(response).to render_template(:edit)
+        end
+      end
+    end
+  end
  
  
 

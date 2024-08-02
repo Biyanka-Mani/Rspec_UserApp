@@ -17,12 +17,12 @@
 # end
 
 
-# shared_examples "restricted unauthorize users" do
-#   it "redirects to the root path" do
-#     expect(response).to redirect_to(root_path)
-#   end
+shared_examples "restricted unauthorize users" do
+  it "redirects to the root path" do
+    expect(response).to redirect_to(root_path)
+  end
 
-#   it "sets a flash alert" do
-#     expect(flash[:alert]).to eq("Only admins can perform that action")
-#   end
-# end
+  it "sets a flash alert" do
+    expect(flash[:alert]).to eq("Only admins can perform that action")
+  end
+end

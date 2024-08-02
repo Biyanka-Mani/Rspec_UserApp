@@ -244,7 +244,7 @@ RSpec.describe "Articles", type: :request do
   describe 'POST #approve' do
     let!(:draft_article) { FactoryBot.create(:article, status: :draft, user:author) }
 
-    context 'when user is an author' do
+    context 'when user is admin' do
       before do
         admin.confirm 
         sign_in admin
@@ -254,9 +254,7 @@ RSpec.describe "Articles", type: :request do
 
       it 'updates the article status to published' do
         draft_article.reload
-       
         expect(draft_article.status).to eq('published')
-        debugger
       end
 
       it 'sets a flash notice' do
@@ -267,6 +265,25 @@ RSpec.describe "Articles", type: :request do
         expect(response).to redirect_to(article_verification_articles_path)
       end
     end
+
+    context 'when the article fails to update' do
+      before do
+        admin.confirm 
+        sign_in admin
+        allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(admin)
+        allow_any_instance_of(Article).to receive(:update).and_return(false)
+        post approve_article_path(draft_article)
+      end
+
+      it 'sets a flash alert' do
+        expect(flash[:alert]).to eq('There was an error approving the article.')
+      end
+
+      it 'redirects to article_verification path' do
+        expect(response).to redirect_to(article_verification_articles_path)
+      end
+    end
+
     context 'when user is not admin' do
       before do
         author.confirm
@@ -283,23 +300,54 @@ RSpec.describe "Articles", type: :request do
       it 'redirects to article_verification path' do
         expect(response).to redirect_to(root_path)
       end
-    end
+    end 
+  end
+  describe 'GET #filter' do
+  let!(:category) { FactoryBot.create(:category) }
+  let!(:tag) { FactoryBot.create(:tag) }
+  let!(:article1) { FactoryBot.create(:article, :published, categories: [category], tags: [tag], created_at: 1.day.ago) }
+  let!(:article2) { FactoryBot.create(:article, :published, created_at: 2.days.ago) }
+  let!(:draft_article) { FactoryBot.create(:article, status: :draft) }
 
-    context 'when the article fails to update' do
-      before do
-        allow_any_instance_of(Article).to receive(:update).and_return(false)
-        post approve_article_path(draft_article)
-      end
+  before do
+    non_author.confirm
+    sign_in non_author
+    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(non_author)
+    get filter_articles_path, params: params
+  end
 
-      it 'sets a flash alert' do
-        expect(flash[:alert]).to eq('There was an error approving the article.')
-      end
+  context 'without any filters' do
+    let(:params) { {} }
 
-      it 'redirects to article_verification path' do
-        expect(response).to redirect_to(article_verification_articles_path)
-      end
+    it 'assigns @articles with all published articles' do
+      expect(assigns(:articles)).to match_array([article1, article2])
     end
   end
+
+  context 'with date filters' do
+    let(:params) { { start_date: 2.days.ago.to_date, end_date: Time.zone.today } }
+
+    it 'filters articles by created_at date range' do
+      expect(assigns(:articles)).to match_array([article1, article2])
+    end
+  end
+
+  context 'with category filter' do
+    let(:params) { { category_id: category.id } }
+
+    it 'filters articles by category' do
+      expect(assigns(:articles)).to match_array([article1])
+    end
+  end
+
+  context 'with tag filter' do
+    let(:params) { { tag_id: tag.id } }
+
+    it 'filters articles by tag' do
+      expect(assigns(:articles)).to match_array([article1])
+    end
+  end
+end
 
 
 

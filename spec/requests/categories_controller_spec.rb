@@ -131,30 +131,35 @@ RSpec.describe "Categories", type: :request do
     end
   end
 
-  # describe "PATCH or PUT #update" do
-  #   context 'with valid parameters' do
-  #     let(:new_attributes) { { name_of_category: 'Updated Name' } }
-  #     it "updated the @article" do
-  #       patch category_path(category), params: { category: new_attributes }
-  #       category.reload 
-  #       expect(category.name_of_category).to eq('Updated Name')
-  #     end
-  #     it "renders flash message and redirects to 'article_path' after successful updation" do
-  #       patch category_path(category),  params: { category: new_attributes }
-  #       category.reload 
-  #       expect(flash[:notice]).to be_present
-  #       expect(response.status).to be(302)
-  #       expect(response.location).to match(/\/categories\/\d+/)
-  #     end
+  describe "PATCH or PUT #update" do
+    context 'when admin user is signed in' do
+      before{ 
+        sign_in admin 
+        admin.confirm }
+      context 'with valid parameters' do
+        let(:new_attributes) { { name_of_category: 'Updated Name' } }
+        it "updated the @article" do
+          patch category_path(category), params: { category: new_attributes }
+          category.reload 
+          expect(category.name_of_category).to eq('Updated Name')
+        end
+        it "renders flash message and redirects to 'article_path' after successful updation" do
+          patch category_path(category),  params: { category: new_attributes }
+          category.reload 
+          expect(flash[:notice]).to be_present
+          expect(response.status).to be(302)
+          expect(response.location).to match(/\/categories\/\d+/)
+        end
 
-  #     it "renders alert message and renders edit after unsucceesful article upadation" do
-  #       patch category_path(category),  params: { category: invalid_attributes }
-  #       category.reload 
-  #       expect(flash[:alert]).to match(/Category Updation Error Occured!*/)
-  #       expect(response).to render_template(:edit)
-  #     end
-  #   end
-  # end
+        it "renders alert message and renders edit after unsucceesful article upadation" do
+          patch category_path(category),  params: { category: invalid_attributes }
+          category.reload 
+          expect(flash[:alert]).to match(/Category Updation Error Occured!*/)
+          expect(response).to render_template(:edit)
+        end
+      end
+    end
+  end
  
   describe "DELETE #destroy" do
     context 'when admin user is signed in' do
